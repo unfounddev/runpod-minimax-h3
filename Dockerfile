@@ -12,13 +12,11 @@ RUN git clone https://github.com/Comfy-Org/ComfyUI.git /opt/ComfyUI \
     && cd /opt/ComfyUI \
     && git checkout 3c1b7a17 \
     && python -m pip install -r requirements.txt
-RUN git clone https://github.com/pixaroma/ComfyUI-Pixaroma.git /opt/ComfyUI/custom_nodes/ComfyUI-Pixaroma \
-    && cd /opt/ComfyUI/custom_nodes/ComfyUI-Pixaroma \
-    && git checkout e464839a \
-    && if [ -f requirements.txt ]; then python -m pip install -r requirements.txt; fi
+COPY custom_nodes/nexus_h3 /opt/ComfyUI/custom_nodes/nexus_h3
 RUN mkdir -p /opt/template
-COPY workflows/Minimax_H3_ref2va.json /opt/template/Minimax_H3_ref2va.json
 COPY startup.sh download_models.sh /opt/template/
+COPY tests/smoke_nodes.py /opt/template/smoke_nodes.py
 RUN chmod +x /opt/template/startup.sh /opt/template/download_models.sh
+RUN python /opt/template/smoke_nodes.py --comfy /opt/ComfyUI --pack /opt/ComfyUI/custom_nodes/nexus_h3
 EXPOSE 8188
 CMD ["/opt/template/startup.sh"]
