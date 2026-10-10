@@ -33,10 +33,11 @@ with tempfile.TemporaryDirectory(prefix="browser-smoke-") as tmp:
         base = f"http://127.0.0.1:{port}"
         auth = "Basic " + base64.b64encode(f"tester:{password}".encode()).decode()
 
-        def request(path, data=None, authorized=False):
+        def request(path, data=None, authorized=False, extra_headers=None, method=None):
             headers = {"Authorization": auth} if authorized else {}
+            headers.update(extra_headers or {})
             req = urllib.request.Request(base+path, data=data, headers=headers,
-                                         method="PUT" if data is not None else "GET")
+                                         method=method or ("PUT" if data is not None else "GET"))
             try:
                 with urllib.request.urlopen(req, timeout=10) as response:
                     return response.status, response.read()
@@ -59,6 +60,19 @@ with tempfile.TemporaryDirectory(prefix="browser-smoke-") as tmp:
             status, body = request("/upload-test.safetensors", b"dummy-test-data", True)
             assert status in (200, 201, 204), (status, body.decode("utf-8", errors="replace").replace(password, "[redacted]"))
             assert request("/upload-test.safetensors", authorized=True) == (200, b"dummy-test-data")
+            proxy = {"Host":"test-8080.proxy.runpod.net", "X-Forwarded-Host":"test-8080.proxy.runpod.net",
+                     "X-Forwarded-Proto":"https", "X-Forwarded-For":"203.0.113.10",
+                     "Origin":"https://test-8080.proxy.runpod.net", "Sec-Fetch-Site":"same-origin"}
+            status, body=request('/proxied-upload.safetensors',b'proxy-test',True,proxy)
+            assert status in (200,201,204),(status,body)
+            assert request('/proxied-upload.safetensors',authorized=True,extra_headers=proxy)==(200,b'proxy-test')
+            status,_=request('/blocked.safetensors',b'blocked',True,{**proxy,'Origin':'https://evil.example','Sec-Fetch-Site':'cross-site'})
+            assert status==403, status
+            boundary='framekit-smoke-boundary'
+            fields={'act':'login','cppwd':password}
+            data=''.join(f'--{boundary}\r\nContent-Disposition: form-data; name="{key}"\r\n\r\n{value}\r\n' for key,value in fields.items())+f'--{boundary}--\r\n'
+            status,body=request('/',data.encode(),False,{**proxy,'Content-Type':f'multipart/form-data; boundary={boundary}'},'POST')
+            assert status in (200,302,303),(status,body.decode(errors='replace').replace(password,'[redacted]'))
             assert not (root / "browser.conf").exists()
             if hasattr(os, "symlink"):
                 try:
