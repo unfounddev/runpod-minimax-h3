@@ -24,8 +24,31 @@ for d in models input output temp; do
   fi
 done
 
-# --user-directory points to /workspace, so there is no duplicate /opt user copy.
-cp -n "$TEMPLATE/Minimax_H3_ref2va.json" "$BASE/user/default/workflows/Minimax_H3_ref2va.json"
+# GitHub owns this copy; personal workflows stay outside the GitHub subfolder.
+if [ "${DOWNLOAD_WORKFLOW:-1}" = "1" ]; then
+  WF_DIR="$BASE/user/default/workflows/GitHub"
+  mkdir -p "$WF_DIR"
+  WF_URL="${WORKFLOW_URL:-https://raw.githubusercontent.com/unfounddev/runpod-minimax-h3/main/workflows/Minimax_H3_ref2va.json}"
+  WF_TMP="$(mktemp "$WF_DIR/.workflow.XXXXXX")"
+  if curl --fail --location --silent --show-error --retry 3 --connect-timeout 15 --max-time 120 \
+      -H 'Cache-Control: no-cache' "$WF_URL" -o "$WF_TMP" \
+      && python - "$WF_TMP" <<'PY'
+import json, sys
+with open(sys.argv[1], encoding="utf-8") as file:
+    workflow = json.load(file)
+if not isinstance(workflow.get("nodes"), list) or not isinstance(workflow.get("links"), list):
+    raise ValueError("Downloaded file is not a ComfyUI workflow")
+if any(n.get("type", "").startswith("Pixaroma") for n in workflow["nodes"]):
+    raise ValueError("This image requires the NEXUS workflow")
+PY
+  then
+    mv "$WF_TMP" "$WF_DIR/Minimax_H3_ref2va.json"
+    echo "NEXUS workflow refreshed from GitHub."
+  else
+    rm -f "$WF_TMP"
+    echo "WARNING: Workflow refresh failed; keeping the previous GitHub copy. You can import JSON manually." >&2
+  fi
+fi
 
 if [ "${DOWNLOAD_MODELS:-1}" = "1" ]; then
   "$TEMPLATE/download_models.sh"
