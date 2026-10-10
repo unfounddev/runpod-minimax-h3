@@ -24,6 +24,7 @@ def browser_config(root, username, password):
 def browser_command(config, port=8080, address="0.0.0.0"):
     return [sys.executable, "-m", "copyparty", "-c", str(config), "-i", address,
             "-p", str(port), "--http-only", "--xvol", "--no-robots",
+            "--rproxy", "-1", "--xff-src", "100.64.0.0/16,127.0.0.1/32",
             "--no-html", "--no-readme", "--no-logues", "--no-reload",
             "--no-voldump", "--no-thumb", "--no-mtag-ff", "--no-dav", "--unpost", "0"]
 
