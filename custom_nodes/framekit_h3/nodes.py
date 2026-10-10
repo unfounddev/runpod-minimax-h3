@@ -257,8 +257,12 @@ class NEXUSSaveMP4:
             if os.path.exists(path):
                 os.remove(path)
             raise
-        return {"ui": {"videos": [{"filename": filename, "subfolder": subfolder,
-                    "type": "output" if save_mode == "save" else "temp"}], "text": [report]}, "result": ()}
+        # Match ComfyUI PreviewVideo: standard media output for Queue and Assets.
+        clip = {"filename": filename, "subfolder": subfolder,
+                "type": "output" if save_mode == "save" else "temp",
+                "format": "video/mp4"}
+        return {"ui": {"images": [clip], "animated": (True,), "text": [report]}, "result": ()}
+
 
 
 NODE_CLASS_MAPPINGS = {cls.__name__:cls for cls in (NEXUSDuration, NEXUSSizes,
