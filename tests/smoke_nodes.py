@@ -26,13 +26,19 @@ spec.loader.exec_module(pack)
 from nexus_h3.settings import duration, size, SIZE_DEFAULT
 from nexus_h3.audio import finish_audio, loudness, run_ffmpeg
 
-assert len(pack.NODE_CLASS_MAPPINGS) == 8
+assert len(pack.NODE_CLASS_MAPPINGS) == 15
 for cls in pack.NODE_CLASS_MAPPINGS.values():
     cls.INPUT_TYPES()
 assert duration('{"seconds":5}') == (124,124/24)
 assert duration('{"seconds":15}')[0] == 362
-assert size(json.dumps(SIZE_DEFAULT)) == (1216,672)
-assert size(json.dumps({**SIZE_DEFAULT,"orientation":"portrait"})) == (672,1216)
+assert size(json.dumps(SIZE_DEFAULT)) == (1184,672)
+assert size(json.dumps({**SIZE_DEFAULT,"orientation":"portrait"})) == (672,1184)
+assert SIZE_DEFAULT['mp']==[i/10 for i in range(1,11)]
+for index in range(10):
+    w,h=size({**SIZE_DEFAULT,'selected':index})
+    assert w%32==h%32==0
+    assert abs(w*h/1e6-SIZE_DEFAULT['mp'][index])<0.025
+    assert size({**SIZE_DEFAULT,'selected':index,'orientation':'portrait'})==(h,w)
 for seconds in (-1,0,16,float("nan")):
     try:
         duration(json.dumps({"seconds":seconds}))
@@ -86,4 +92,4 @@ with tempfile.TemporaryDirectory(prefix="nexus-test-") as temporary:
     assert other["ui"]["videos"][0]["filename"] != filename
     assert other["ui"]["videos"][0]["type"] == "temp"
 
-print("NEXUS smoke passed: 8 nodes, H3 settings, image, stereo loudness, limiter, silence, MP4 and metadata")
+print("FRAMEKIT smoke passed: 7 nodes + 8 legacy aliases, standard MP sizes, H3, audio, MP4 and metadata")
