@@ -57,7 +57,7 @@ with tempfile.TemporaryDirectory(prefix="browser-smoke-") as tmp:
             assert status in (401, 403, 404) and b"private-data" not in body
             assert request("/private-marker.txt", authorized=True) == (200, b"private-data")
             status, body = request("/upload-test.safetensors", b"dummy-test-data", True)
-            assert status in (200, 201, 204), status
+            assert status in (200, 201, 204), (status, body.decode("utf-8", errors="replace").replace(password, "[redacted]"))
             assert request("/upload-test.safetensors", authorized=True) == (200, b"dummy-test-data")
             assert not (root / "browser.conf").exists()
             if hasattr(os, "symlink"):
@@ -68,6 +68,11 @@ with tempfile.TemporaryDirectory(prefix="browser-smoke-") as tmp:
                 else:
                     status, body = request("/escape/browser.conf", authorized=True)
                     assert status != 200 and password.encode() not in body
+        except Exception:
+            log.flush()
+            text = (directory / "log.txt").read_text(encoding="utf-8", errors="replace")
+            print(text.replace(password, "[redacted]")[-6000:])
+            raise
         finally:
             child.terminate()
             try:
