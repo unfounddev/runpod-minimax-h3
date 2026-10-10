@@ -54,5 +54,10 @@ if [ "${DOWNLOAD_MODELS:-1}" = "1" ]; then
   "$TEMPLATE/download_models.sh"
 fi
 
+mkdir -p "$BASE/user/__manager"
+if [ ! -f "$BASE/user/__manager/config.ini" ]; then
+  printf '[default]\nuse_uv = False\nsecurity_level = normal\nnetwork_mode = public\nallow_git_url_install = False\nallow_pip_install = False\n' > "$BASE/user/__manager/config.ini"
+fi
+
 cd "$APP"
-exec python main.py --listen 0.0.0.0 --port 8188 --user-directory "$BASE/user"
+exec python main.py --listen 0.0.0.0 --port 8188 --user-directory "$BASE/user" --enable-manager --enable-manager-legacy-ui
