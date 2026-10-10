@@ -159,7 +159,7 @@ class NEXUSSaveMP4:
             if audio is None:
                 audio = components.audio
         if video_frames is None or video_frames.ndim != 4 or video_frames.shape[0] == 0 or video_frames.shape[-1] != 3:
-            raise ValueError("Connect RGB video frames to NEXUS Save MP4")
+            raise ValueError("Connect RGB video frames to FRAMEKIT Save MP4")
         _, h, w, _ = video_frames.shape
         if w % 2 or h % 2:
             raise ValueError("MP4 dimensions must be even")
@@ -180,7 +180,7 @@ class NEXUSSaveMP4:
                 except FileExistsError:
                     counter += 1
         try:
-            with tempfile.TemporaryDirectory(prefix="nexus-") as temporary:
+            with tempfile.TemporaryDirectory(prefix="framekit-") as temporary:
                 cmd = [ffmpeg(), "-hide_banner", "-loglevel", "error", "-y",
                        "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{w}x{h}",
                        "-r", str(Fraction(str(float(fps)))), "-i", "pipe:0"]
