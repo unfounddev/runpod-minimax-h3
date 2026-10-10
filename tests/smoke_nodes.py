@@ -76,7 +76,14 @@ with tempfile.TemporaryDirectory(prefix="nexus-test-") as temporary:
     audio = {"waveform":torch.from_numpy(signal).unsqueeze(0),"sample_rate":rate}
     result = save.save(24,"nexus-smoke",video_frames=frames,audio=audio,
                        prompt={"cache":float("nan")},extra_pnginfo={"workflow":{"nodes":[],"links":[]}})
-    filename = result["ui"]["videos"][0]["filename"]
+    from comfy_execution.jobs import get_outputs_summary, count_previewable_outputs
+    count, preview = get_outputs_summary({"228": result["ui"]})
+    assert count == 1 and preview["filename"].endswith(".mp4")
+    assert preview["type"] == "output" and preview["mediaType"] == "images"
+    assert count_previewable_outputs({"228": result["ui"]}) == 1
+    assert result["ui"]["animated"] == (True,)
+    assert preview["format"] == "video/mp4"
+    filename = result["ui"]["images"][0]["filename"]
     path = Path(temporary)/filename
     decoded = run_ffmpeg(["-i",str(path),"-vn","-f","f32le","-ac","2","-ar",str(rate),"pipe:1"])
     samples = np.frombuffer(decoded.stdout,dtype="<f4").reshape(-1,2).T
@@ -90,8 +97,8 @@ with tempfile.TemporaryDirectory(prefix="nexus-test-") as temporary:
         assert json.loads(video.metadata["prompt"])["cache"] is None
         assert "workflow" in video.metadata
     other = save.save(24,"nexus-smoke",video_frames=frames,audio=None,save_mode="preview")
-    assert other["ui"]["videos"][0]["filename"] != filename
-    assert other["ui"]["videos"][0]["type"] == "temp"
+    assert other["ui"]["images"][0]["filename"] != filename
+    assert other["ui"]["images"][0]["type"] == "temp"
 
 print("FRAMEKIT smoke passed: 7 nodes + 8 legacy aliases, standard MP sizes, H3, audio, MP4 and metadata")
 
