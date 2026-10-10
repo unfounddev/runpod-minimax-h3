@@ -1,26 +1,23 @@
-# Runpod MiniMax H3 Ref2VA (draft)
+# MiniMax H3 Ref2VA — Runpod template (validation pending)
 
-This repository packages the provided `Minimax_H3_ref2va.json` workflow with ComfyUI and its custom nodes.
+Based on the provided 30-node workflow. Only **ComfyUI Core** and **ComfyUI-Pixaroma** are required by its nodes; no KJNodes, Civicomfy or RunpodDirect. ComfyUI Manager is optional and not installed.
 
-**NOT YET VALIDATED. Do not publish the Runpod template until the image builds and a clean GPU deployment passes.**
+## Contents
+- `workflows/Minimax_H3_ref2va_original.json`: exact user-provided workflow, unchanged.
+- `workflows/Minimax_H3_ref2va.json`: deployment-ready default. Removes two **bypassed, strength-zero** LoRA loader nodes referencing unavailable `HMBreastsV2.safetensors` and `H3_ta86_inkriot.safetensors`; rewires Turbo directly to Sigma Shift. Reference image/audio filenames are placeholders; supply your own before running.
+- `Dockerfile`: ComfyUI plus Pixaroma only.
+- `startup.sh`: persistent data in `/workspace/ComfyUI`, automatic model downloads before ComfyUI starts.
+- `download_models.sh`: five selected model files; no weights stored in GitHub or Docker image.
 
-## Requirements
-- GPU with sufficient VRAM (RTX 5090 32 GB was used previously; not a guarantee for all resolutions/durations).
-- Port 8188 HTTP, volume mounted at `/workspace`, recommended 100 GB+ free space for models and outputs.
-- Set `DOWNLOAD_MODELS=1` to fetch models at startup. This can take significant time.
-- Singularity and Turbo download URLs are preconfigured from the links supplied by the workflow owner. You may override them with `SINGULARITY_MODEL_URL` and `TURBO_LORA_URL`. Verify model terms before public release.
-- Optional zero-strength LoRAs (`HMBreastsV2.safetensors`, `H3_ta86_inkriot.safetensors`) are not included; they may show as missing in dropdowns until installed or changed.
-- Upload your own reference images and optional audio; the workflow points to example files not bundled in this repository.
+## Runpod template settings
+- Container image: `ghcr.io/unfounddev/runpod-minimax-h3:latest` **after GitHub Actions build succeeds and GHCR package is made public**.
+- HTTP port: `8188`; volume mount: `/workspace`.
+- `DOWNLOAD_MODELS=1` by default. Set to `0` only if weights are already present.
+- At least 70 GB free persistent space recommended for models and outputs; increase for long video jobs. A 32 GB VRAM RTX 5090 was used before, but this image is not yet GPU-tested.
+- First boot downloads tens of GB and may take a long time. Wait for model downloads before opening ComfyUI.
 
-## Notes
-- GitHub Actions publishes `ghcr.io/unfounddev/runpod-minimax-h3:latest` when a build succeeds.
-- GHCR package must be public before Runpod can pull without credentials.
-- Original diffusion model linked in workflow notes differs from selected Singularity diffusion model.
-- License/redistribution requirements for the model and third-party components must be checked before public release.
-- No claim of working deployment until tested.
-
-
-## Model downloads on startup
-By default `DOWNLOAD_MODELS=1`, so the startup script downloads the five core models to `/workspace/ComfyUI/models` before launching ComfyUI. Set `DOWNLOAD_MODELS=0` to skip. Downloads can take considerable time and disk space (~40 GB). Persistent storage is recommended.
-
-**Optional LoRA caveat:** The supplied workflow references `HMBreastsV2.safetensors` and `H3_ta86_inkriot.safetensors` at strength 0. These files are **not** included in the automatic downloads because their sources have not been provided. Even at strength 0, loader nodes may require files to exist. Disable/bypass those loader nodes or provide the files separately before execution.
+## Important limitations
+- **Not yet built or deployed**. Base image tag, upstream commits and dependencies still require a real GitHub Actions build and clean GPU Pod test.
+- Workflow includes bypassed reference image and optional audio nodes; upload your own images/audio and enable relevant nodes before execution.
+- Check licenses and commercial/public-template terms of MiniMax H3, Singularity, LightX2V, Pixaroma before publishing.
+- This is not an official MiniMax or Pixaroma image.
