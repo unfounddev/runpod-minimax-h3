@@ -39,11 +39,11 @@ with open(sys.argv[1], encoding="utf-8") as file:
 if not isinstance(workflow.get("nodes"), list) or not isinstance(workflow.get("links"), list):
     raise ValueError("Downloaded file is not a ComfyUI workflow")
 if any(n.get("type", "").startswith("Pixaroma") for n in workflow["nodes"]):
-    raise ValueError("This image requires the NEXUS workflow")
+    raise ValueError("This image requires the FRAMEKIT workflow")
 PY
   then
     mv "$WF_TMP" "$WF_DIR/Minimax_H3_ref2va.json"
-    echo "NEXUS workflow refreshed from GitHub."
+    echo "FRAMEKIT workflow refreshed from GitHub."
   else
     rm -f "$WF_TMP"
     echo "WARNING: Workflow refresh failed; keeping the previous GitHub copy. You can import JSON manually." >&2
