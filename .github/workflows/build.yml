@@ -3,6 +3,10 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
+    paths-ignore:
+      - 'workflows/**'
+      - 'WORKFLOW_SHA256.txt'
+      - 'README.md'
 permissions:
   contents: read
   packages: write
