@@ -1,10 +1,10 @@
-# MiniMax H3 Ref2VA — NEXUS Runpod image
+# MiniMax H3 Ref2VA — FRAMEKIT Runpod image
 
 ## Components
 - PyTorch 2.10.0 / CUDA 13.0 / cuDNN 9 base image.
 - `/opt/ComfyUI`: ComfyUI Core pinned to `3c1b7a17` (v0.39.2).
-- `/opt/ComfyUI/custom_nodes/nexus_h3`: independent NEXUS controls.
-- System FFmpeg and ComfyUI's Python packages; no Pixaroma installation.
+- `/opt/ComfyUI/custom_nodes/nexus_h3`: independent FRAMEKIT controls.
+- System FFmpeg and ComfyUI's Python packages; no Pixaroma installation. UI styling adapted under the included Pixaroma MIT license.
 - `/opt/template`: startup, model downloader and CPU smoke check.
 - `/workspace/ComfyUI`: persistent models, input, output, temp and user files.
 - HTTP port `8188`; `--user-directory /workspace/ComfyUI/user`.
@@ -45,13 +45,13 @@ Changes limited to JSON, its checksum or README skip image builds. Changes to
 custom node code, dependencies, startup or Dockerfile need a build and a Pod
 using the new image. Existing Pods keep their existing image.
 
-## NEXUS controls
+## FRAMEKIT controls
 The migrated workflow replaces the eight Pixaroma node types it used:
-Sizes, Duration, Load Image, Prompt, Save MP4, Run Timer, Label and Note.
+Sizes, Duration, Prompt, Save MP4, Run Timer, Label and Note. Native ComfyUI LoadImage replaces the custom image loader.
 It retains model/LoRA/sampler settings, reference connections, bypass modes,
 seeds, node positions, duration selection and the actual saved prompt.
 
-Sizes has the original resolution list and Portrait/Landscape buttons; Duration
+Sizes has standard 0.1–1.0 MP presets (approximate area after 32-pixel snapping) and Portrait/Landscape buttons; Duration
 has the original second buttons and H3 frame-count readout. Prompt/image/video
 previews stay on their respective nodes. Native ComfyUI still owns the canvas,
 Queue/Run and model nodes. This is not a copy of every Pixaroma feature.
@@ -81,8 +81,27 @@ workflow, upload references and enable the desired input nodes.
 
 ## Validation
 The build also verifies the file manager's authentication and real upload/download.
-The image build checks all eight registrations, H3 settings, image decoding,
+The image build checks FRAMEKIT registrations and legacy compatibility, H3 settings, image decoding,
 stereo loudness, silence, limiting, real H.264/AAC output and workflow metadata.
 No GPU or model weights are needed for those CPU checks. GPU inference and
 actual model downloads still need a Pod test. `WORKFLOW_SHA256.txt` records the
 migrated GitHub JSON, not the old V6 file.
+
+## Manager, restart and Runpod proxy
+ComfyUI-Manager 4.2.2 is installed through ComfyUI's pinned manager_requirements.txt.
+The familiar Manager UI is enabled, including its Restart action. Restart replaces
+only the ComfyUI process; it does not stop the Pod or remove its container files.
+Default Manager security remains normal; unrestricted git URL/pip installation is
+not enabled. Its configuration is stored in /workspace/ComfyUI/user/__manager.
+
+Runpod Console links can open ComfyUI's root document directly. The exception is
+limited to GET / navigation on a Runpod proxy domain; cross-site API requests and
+writes remain rejected. File manager trusts Runpod's 100.64.0.0/16 proxy network
+and reads forwarded HTTPS/host headers; CORS and login protection remain enabled.
+Its build check tests HTTPS proxy login/upload and rejection of a foreign Origin.
+
+## FRAMEKIT appearance
+Click the gear on a FRAMEKIT node (or right-click → FRAMEKIT appearance).
+Button/accent, title and body colors are saved per node in the workflow. Label
+font size can also be changed. The workflow now uses ordinary ComfyUI Load Image,
+so there is only one image preview. Old NEXUS IDs remain as legacy aliases.
