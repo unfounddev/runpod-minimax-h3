@@ -9,6 +9,7 @@ import tempfile
 parser = argparse.ArgumentParser()
 parser.add_argument("--comfy", required=True)
 parser.add_argument("--pack", required=True)
+parser.add_argument("--workflow")
 opts = parser.parse_args()
 sys.path.insert(0, str(Path(opts.comfy).resolve()))
 from comfy.cli_args import args
@@ -18,13 +19,13 @@ import numpy as np
 import torch
 from PIL import Image
 
-spec = importlib.util.spec_from_file_location("nexus_h3", Path(opts.pack)/"__init__.py",
+spec = importlib.util.spec_from_file_location("framekit_h3", Path(opts.pack)/"__init__.py",
                                              submodule_search_locations=[opts.pack])
 pack = importlib.util.module_from_spec(spec)
 sys.modules[spec.name] = pack
 spec.loader.exec_module(pack)
-from nexus_h3.settings import duration, size, SIZE_DEFAULT
-from nexus_h3.audio import finish_audio, loudness, run_ffmpeg
+from framekit_h3.settings import duration, size, SIZE_DEFAULT
+from framekit_h3.audio import finish_audio, loudness, run_ffmpeg
 
 assert len(pack.NODE_CLASS_MAPPINGS) == 15
 for cls in pack.NODE_CLASS_MAPPINGS.values():
@@ -93,3 +94,28 @@ with tempfile.TemporaryDirectory(prefix="nexus-test-") as temporary:
     assert other["ui"]["videos"][0]["type"] == "temp"
 
 print("FRAMEKIT smoke passed: 7 nodes + 8 legacy aliases, standard MP sizes, H3, audio, MP4 and metadata")
+
+if opts.workflow:
+    workflow=json.loads(Path(opts.workflow).read_text(encoding="utf-8"))
+    nodes={node["id"]:node for node in workflow["nodes"]}
+    assert len(nodes)==len(workflow["nodes"])
+    for link in workflow["links"]:
+        ident,source,source_slot,target,target_slot,kind=link
+        output=nodes[source]["outputs"][source_slot]
+        entry=nodes[target]["inputs"][target_slot]
+        assert ident in output["links"] and entry["link"]==ident,link
+    for node in nodes.values():
+        if node["type"].startswith("FRAMEKIT"):
+            cls=pack.NODE_CLASS_MAPPINGS[node["type"]]
+            inputs=cls.INPUT_TYPES().get("required",{})
+            widget_names=[name for name,spec in inputs.items()
+                if isinstance(spec[0],list) or spec[0] in ("STRING","INT","FLOAT","BOOLEAN")]
+            values=node.get("widgets_values",[])
+            assert len(values)==len(widget_names),(node["id"],widget_names,values)
+            options=dict(zip(widget_names,values))
+            if node["type"]=="FRAMEKITSizes":assert cls().run(**options)==(1184,672)
+            if node["type"]=="FRAMEKITDuration":assert cls().run(**options)[0]==362
+            if node["type"]=="FRAMEKITSaveMP4":
+                assert options["audio_mode"]=="normalize" and options["target_lufs"]==-16
+    assert all(not n["type"].startswith("NEXUS") for n in nodes.values())
+    print("Workflow smoke passed: links, slot positions, FRAMEKIT widget values and output paths")
