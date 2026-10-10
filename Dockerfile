@@ -15,8 +15,12 @@ RUN git clone https://github.com/Comfy-Org/ComfyUI.git /opt/ComfyUI \
 COPY custom_nodes/nexus_h3 /opt/ComfyUI/custom_nodes/nexus_h3
 RUN mkdir -p /opt/template
 COPY startup.sh download_models.sh /opt/template/
+COPY services.py /opt/template/services.py
+RUN python -m pip install copyparty==1.20.25
+COPY tests/smoke_browser.py /opt/template/smoke_browser.py
+RUN bash -n /opt/template/startup.sh && python /opt/template/smoke_browser.py /opt/template/services.py
 COPY tests/smoke_nodes.py /opt/template/smoke_nodes.py
 RUN chmod +x /opt/template/startup.sh /opt/template/download_models.sh
 RUN python /opt/template/smoke_nodes.py --comfy /opt/ComfyUI --pack /opt/ComfyUI/custom_nodes/nexus_h3
-EXPOSE 8188
-CMD ["/opt/template/startup.sh"]
+EXPOSE 8188 8080
+CMD ["python", "/opt/template/services.py"]
