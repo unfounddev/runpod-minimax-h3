@@ -13,7 +13,7 @@ from PIL import Image, ImageOps
 from .audio import ffmpeg, finish_audio
 from .settings import SIZE_DEFAULT, DURATION_DEFAULT, duration, size
 
-CATEGORY = "NEXUS H3"
+CATEGORY = "FRAMEKIT H3"
 
 
 class NEXUSDuration:
@@ -263,4 +263,12 @@ class NEXUSSaveMP4:
 
 NODE_CLASS_MAPPINGS = {cls.__name__:cls for cls in (NEXUSDuration, NEXUSSizes,
     NEXUSLoadImage, NEXUSPrompt, NEXUSSaveMP4, NEXUSLabel, NEXUSNote, NEXUSRunTimer)}
-NODE_DISPLAY_NAME_MAPPINGS = {name: name.replace("NEXUS", "NEXUS · ").replace("SaveMP4", "Save MP4").replace("LoadImage", "Load Image").replace("RunTimer", "Run Timer") for name in NODE_CLASS_MAPPINGS}
+# Keep old workflows loadable while new workflows use the FRAMEKIT names.
+for name, cls in list(NODE_CLASS_MAPPINGS.items()):
+    cls.CATEGORY = "FRAMEKIT H3/Legacy"
+    if name != "NEXUSLoadImage":
+        new_name = name.replace("NEXUS", "FRAMEKIT")
+        NODE_CLASS_MAPPINGS[new_name] = type(new_name, (cls,), {"CATEGORY": CATEGORY})
+NODE_DISPLAY_NAME_MAPPINGS = {name: "FRAMEKIT · " + name.replace("NEXUS", "").replace("FRAMEKIT", "")
+    .replace("SaveMP4", "Save MP4").replace("LoadImage", "Load Image").replace("RunTimer", "Run Timer")
+    + (" (legacy)" if name.startswith("NEXUS") else "") for name in NODE_CLASS_MAPPINGS}
