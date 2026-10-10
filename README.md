@@ -3,30 +3,32 @@
 ## Components
 - PyTorch 2.10.0 / CUDA 13.0 / cuDNN 9 base image.
 - `/opt/ComfyUI`: ComfyUI Core pinned to `3c1b7a17` (v0.39.2).
-- `/opt/ComfyUI/custom_nodes/nexus_h3`: independent FRAMEKIT controls.
+- `/opt/ComfyUI/custom_nodes/framekit_h3`: independent FRAMEKIT controls.
 - System FFmpeg and ComfyUI's Python packages; no Pixaroma installation. UI styling adapted under the included Pixaroma MIT license.
 - `/opt/template`: startup, model downloader and CPU smoke check.
 - `/workspace/ComfyUI`: persistent models, input, output, temp and user files.
 - HTTP port `8188`; `--user-directory /workspace/ComfyUI/user`.
-- Copyparty 1.20.25 file manager on HTTP `8080`, when credentials are configured.
+- File Browser 2.63.23 on HTTP `8080`, with a default admin account.
 
-## File manager
-Expose HTTP ports `8188` (ComfyUI) and `8080` (File manager) in the Runpod template.
-Leave the container start command empty. In Runpod, create a Secret and bind it
-to environment variable `FILE_BROWSER_PASSWORD`. Use a unique password of
-12–128 letters, numbers or `!@$_.+-`. The username defaults to `admin`; override
-it with `FILE_BROWSER_USERNAME` (letters, numbers, underscore, hyphen).
-Without a password the file manager stays disabled and ComfyUI still starts.
-`ENABLE_FILE_BROWSER=0` also disables it.
+## File Browser
+Expose HTTP ports `8188` (ComfyUI) and `8080` (File Browser) in the Runpod template.
+Leave the container start command empty. The image uses official File Browser
+2.63.23 with its familiar username/password login and file management interface.
+Set these environment variables in the Runpod template:
 
-After deploying the new image, open Connect → HTTP Service 8080 and log in.
-It serves `/workspace`: upload LoRAs into `ComfyUI/models/loras`, main weights
-into `ComfyUI/models/diffusion_models/h3`, and download clips from `ComfyUI/output`.
-Uploads can resume after a network interruption. Refresh ComfyUI's model list
-after uploading, or restart ComfyUI. The manager starts before model downloads.
-No anonymous file access is granted. Its private configuration stays outside
-the served directory, and symlinks cannot escape the workspace. Model files
-remain temporary if no volume is attached; a file manager does not add storage.
+- `FILE_BROWSER_USERNAME=admin`
+- `FILE_BROWSER_PASSWORD=adminadmin12`
+
+These are also the image defaults. Override them before the first startup to
+create a different account. File Browser initializes the account once; restarting
+the container preserves passwords changed in the UI. Changing environment variables
+after initialization does not overwrite existing accounts.
+`ENABLE_FILE_BROWSER=0` disables this service. The UI opens `/workspace`, including
+`ComfyUI/input` for images, `ComfyUI/models/loras` for LoRA files and
+`ComfyUI/output` for generated clips. The database is stored outside the served
+folder at `/var/lib/framekit-filebrowser/filebrowser.db`. Container-only data is
+lost when the Pod/container storage is discarded. HTTP port 8080 is served behind
+Runpod's HTTPS proxy; no extra `?direct=1` parameter is required by File Browser.
 
 ## Workflow comes from GitHub
 Workflow JSON is not baked into the image. Every Pod start downloads
@@ -96,9 +98,9 @@ not enabled. Its configuration is stored in /workspace/ComfyUI/user/__manager.
 
 Runpod Console links can open ComfyUI's root document directly. The exception is
 limited to GET / navigation on a Runpod proxy domain; cross-site API requests and
-writes remain rejected. File manager trusts Runpod's 100.64.0.0/16 proxy network
-and reads forwarded HTTPS/host headers; CORS and login protection remain enabled.
-Its build check tests HTTPS proxy login/upload and rejection of a foreign Origin.
+writes remain rejected. File Browser uses its own username/password JSON login
+and token-authenticated uploads. Its smoke check exercises login, upload and
+download with Runpod HTTPS proxy headers, incorrect passwords and anonymous access.
 
 ## FRAMEKIT appearance
 Click the gear on a FRAMEKIT node (or right-click → FRAMEKIT appearance).
