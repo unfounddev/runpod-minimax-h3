@@ -45,7 +45,7 @@
     },
     {
       "id": 212,
-      "type": "NEXUSNote",
+      "type": "FRAMEKITNote",
       "pos": [
         -1610.9679534822276,
         217.83035566381673
@@ -60,14 +60,15 @@
       "inputs": [],
       "outputs": [],
       "properties": {
-        "Node name for S&R": "NEXUSNote",
+        "Node name for S&R": "FRAMEKITNote",
         "nexusAccent": "#f66744"
       },
       "widgets_values": [
         "MODELS AND NODES USED IN THIS WORKFLOW\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n Load Diffusion Model\n\n\n\n\n\n\n\n\n\n\nDownload minimax_h3_ref2va_pruned_int8_convrot.safetensors19.5 GB \n\n\n\n\n\n\n\n\n\nPlace in: ComfyUI/models/diffusion_models/h3\n\n\n\n\n\n\n\n\n\nCreate the h3 folder if it does not exist.\n\n\n\n\n\n\n\n\n\n\n\n  More versions\n READ LICENSE More About LICENSE \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n Load CLIP\n\n\n\n\n\n\n\n\n\n\n\n  Download qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors14.6 GB\n \n\n\n\n\n\n\n\n\n\nPlace in: ComfyUI/models/text_encoders\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n Load VAE\n\n\n\n\n\n\n\n\n\n\n\n  Download minimax_h3_video_vae_fp16.safetensors4.9 GB\n \n\n\n\n\n\n\n\n\n\n\n\n\n  Download minimax_h3_audio_vae_fp32.safetensors577 MB\n \n\n\n\n\n\n\n\n\n\nPlace in: ComfyUI/models/vae\n\n\nCustom Chat GPT\nCustom ChatGPT for H3 for Reference Model Prompting (Beta) \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n After placing the files, restart ComfyUI or refresh model lists using the R shortcut.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n Nodes Installed from Manager\n\n\n\n\n\n\n\n\n\n  \nPixaroma\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n Resources\n\n\n\n\n\n\n\n\n\n\n  Join Discord \n  Pixaroma YouTube Channel"
       ],
       "color": "#1d1d1d",
-      "bgcolor": "#2a2a2a"
+      "bgcolor": "#2a2a2a",
+      "title": "FRAMEKITNote"
     },
     {
       "id": 227,
@@ -376,7 +377,7 @@
     },
     {
       "id": 234,
-      "type": "NEXUSDuration",
+      "type": "FRAMEKITDuration",
       "pos": [
         -243.37871144429795,
         678.5235329970128
@@ -403,9 +404,9 @@
           "links": null
         }
       ],
-      "title": "2. Duration NEXUS",
+      "title": "2. Duration FRAMEKIT",
       "properties": {
-        "Node name for S&R": "NEXUSDuration",
+        "Node name for S&R": "FRAMEKITDuration",
         "nexusAccent": "#f66744"
       },
       "widgets_values": [
@@ -416,7 +417,7 @@
     },
     {
       "id": 236,
-      "type": "NEXUSLoadImage",
+      "type": "LoadImage",
       "pos": [
         -1032.3327979409496,
         825.7226604262966
@@ -443,21 +444,20 @@
           "links": null
         }
       ],
-      "title": "3. Load Image - ref_image_0",
+      "title": "Load Image",
       "properties": {
-        "Node name for S&R": "NEXUSLoadImage",
+        "Node name for S&R": "LoadImage",
         "nexusAccent": "#f66744"
       },
       "widgets_values": [
-        "bunny_black_suit.jpeg",
-        "image"
+        "bunny_black_suit.jpeg"
       ],
       "color": "#14436c",
       "bgcolor": "#2a2a2a"
     },
     {
       "id": 238,
-      "type": "NEXUSLoadImage",
+      "type": "LoadImage",
       "pos": [
         -501.0425308918292,
         825.7226604262966
@@ -484,21 +484,20 @@
           "links": null
         }
       ],
-      "title": "4. Load Image - ref_image_1",
+      "title": "Load Image",
       "properties": {
-        "Node name for S&R": "NEXUSLoadImage",
+        "Node name for S&R": "LoadImage",
         "nexusAccent": "#f66744"
       },
       "widgets_values": [
-        "orange_outfit.jpeg",
-        "image"
+        "orange_outfit.jpeg"
       ],
       "color": "#14436c",
       "bgcolor": "#2a2a2a"
     },
     {
       "id": 240,
-      "type": "NEXUSLoadImage",
+      "type": "LoadImage",
       "pos": [
         30.24773615729123,
         824.9280910761892
@@ -525,21 +524,20 @@
           "links": null
         }
       ],
-      "title": "5. Load Image - ref_image_2",
+      "title": "Load Image",
       "properties": {
-        "Node name for S&R": "NEXUSLoadImage",
+        "Node name for S&R": "LoadImage",
         "nexusAccent": "#f66744"
       },
       "widgets_values": [
-        "exotic_background.jpeg",
-        "image"
+        "exotic_background.jpeg"
       ],
       "color": "#14436c",
       "bgcolor": "#2a2a2a"
     },
     {
       "id": 223,
-      "type": "NEXUSSizes",
+      "type": "FRAMEKITSizes",
       "pos": [
         -509.51259285471383,
         217.83035566381673
@@ -570,11 +568,11 @@
       ],
       "title": "1. Pick Orientation and Size",
       "properties": {
-        "Node name for S&R": "NEXUSSizes",
+        "Node name for S&R": "FRAMEKITSizes",
         "nexusAccent": "#f66744"
       },
       "widgets_values": [
-        "{\"sizes\": [[608, 352], [736, 416], [864, 480], [960, 544], [1056, 608], [1152, 640], [1216, 672], [1280, 736], [1344, 768], [1376, 768], [1504, 832], [1664, 928], [1824, 1024], [1920, 1088]], \"selected\": 6, \"orientation\": \"landscape\", \"snap\": 32, \"starred\": [\"480x864\", \"672x1216\", \"768x1344\"], \"collapsed\": false}"
+        "{\"sizes\": [[416, 224], [608, 320], [736, 416], [832, 480], [928, 544], [1024, 576], [1120, 608], [1184, 672], [1280, 704], [1344, 736]], \"mp\": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0], \"selected\": 7, \"orientation\": \"landscape\", \"snap\": 32}"
       ],
       "color": "#14436c",
       "bgcolor": "#2a2a2a"
@@ -621,7 +619,7 @@
     },
     {
       "id": 228,
-      "type": "NEXUSSaveMP4",
+      "type": "FRAMEKITSaveMP4",
       "pos": [
         623.7517490454632,
         34.09006242686652
@@ -655,7 +653,7 @@
       ],
       "outputs": [],
       "properties": {
-        "Node name for S&R": "NEXUSSaveMP4",
+        "Node name for S&R": "FRAMEKITSaveMP4",
         "nexusAccent": "#f66744"
       },
       "widgets_values": [
@@ -670,11 +668,12 @@
         0
       ],
       "color": "#1d1d1d",
-      "bgcolor": "#2a2a2a"
+      "bgcolor": "#2a2a2a",
+      "title": "FRAMEKITSaveMP4"
     },
     {
       "id": 235,
-      "type": "NEXUSRunTimer",
+      "type": "FRAMEKITRunTimer",
       "pos": [
         304.37877892752135,
         656.9992542120268
@@ -691,16 +690,17 @@
       "inputs": [],
       "outputs": [],
       "properties": {
-        "Node name for S&R": "NEXUSRunTimer",
+        "Node name for S&R": "FRAMEKITRunTimer",
         "nexusAccent": "#f66744"
       },
       "color": "#1d1d1d",
       "bgcolor": "#2a2a2a",
-      "widgets_values": []
+      "widgets_values": [],
+      "title": "FRAMEKITRunTimer"
     },
     {
       "id": 198,
-      "type": "NEXUSLabel",
+      "type": "FRAMEKITLabel",
       "pos": [
         -1610.9679534822276,
         95.8319351452273
@@ -717,14 +717,15 @@
       "inputs": [],
       "outputs": [],
       "properties": {
-        "Node name for S&R": "NEXUSLabel",
+        "Node name for S&R": "FRAMEKITLabel",
         "nexusAccent": "#f66744"
       },
       "widgets_values": [
         "Minimax H3 - Reference Three Images"
       ],
       "color": "rgba(0,0,0,0)",
-      "bgcolor": "rgba(0,0,0,0)"
+      "bgcolor": "rgba(0,0,0,0)",
+      "title": "FRAMEKITLabel"
     },
     {
       "id": 225,
@@ -801,7 +802,7 @@
     },
     {
       "id": 239,
-      "type": "NEXUSPrompt",
+      "type": "FRAMEKITPrompt",
       "pos": [
         561.5380032064116,
         825.7226604262967
@@ -833,9 +834,9 @@
           ]
         }
       ],
-      "title": "6. Prompt NEXUS",
+      "title": "6. Prompt FRAMEKIT",
       "properties": {
-        "Node name for S&R": "NEXUSPrompt",
+        "Node name for S&R": "FRAMEKITPrompt",
         "nexusAccent": "#f66744"
       },
       "widgets_values": [
@@ -1128,7 +1129,7 @@
     },
     {
       "id": 246,
-      "type": "NEXUSSaveMP4",
+      "type": "FRAMEKITSaveMP4",
       "pos": [
         1378.761930250483,
         30.4620751287763
@@ -1163,7 +1164,7 @@
       "outputs": [],
       "title": "OUTPUT B — SEED COMPARISON",
       "properties": {
-        "Node name for S&R": "NEXUSSaveMP4",
+        "Node name for S&R": "FRAMEKITSaveMP4",
         "nexusAccent": "#f66744"
       },
       "widgets_values": [
