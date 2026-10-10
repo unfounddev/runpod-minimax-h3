@@ -61,10 +61,10 @@
       "outputs": [],
       "properties": {
         "Node name for S&R": "FRAMEKITNote",
-        "nexusAccent": "#f66744"
+        "framekitAccent": "#f66744"
       },
       "widgets_values": [
-        "MODELS AND NODES USED IN THIS WORKFLOW\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n Load Diffusion Model\n\n\n\n\n\n\n\n\n\n\nDownload minimax_h3_ref2va_pruned_int8_convrot.safetensors19.5 GB \n\n\n\n\n\n\n\n\n\nPlace in: ComfyUI/models/diffusion_models/h3\n\n\n\n\n\n\n\n\n\nCreate the h3 folder if it does not exist.\n\n\n\n\n\n\n\n\n\n\n\n  More versions\n READ LICENSE More About LICENSE \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n Load CLIP\n\n\n\n\n\n\n\n\n\n\n\n  Download qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors14.6 GB\n \n\n\n\n\n\n\n\n\n\nPlace in: ComfyUI/models/text_encoders\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n Load VAE\n\n\n\n\n\n\n\n\n\n\n\n  Download minimax_h3_video_vae_fp16.safetensors4.9 GB\n \n\n\n\n\n\n\n\n\n\n\n\n\n  Download minimax_h3_audio_vae_fp32.safetensors577 MB\n \n\n\n\n\n\n\n\n\n\nPlace in: ComfyUI/models/vae\n\n\nCustom Chat GPT\nCustom ChatGPT for H3 for Reference Model Prompting (Beta) \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n After placing the files, restart ComfyUI or refresh model lists using the R shortcut.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n Nodes Installed from Manager\n\n\n\n\n\n\n\n\n\n  \nPixaroma\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n Resources\n\n\n\n\n\n\n\n\n\n\n  Join Discord \n  Pixaroma YouTube Channel"
+        "FRAMEKIT H3\n\nModel paths (File Browser):\nComfyUI/models/diffusion_models/h3\nComfyUI/models/text_encoders\nComfyUI/models/vae\n\nUpload reference images to ComfyUI/input, then select them in Load Image.\nGenerated clips are saved to ComfyUI/output.\n\nFRAMEKIT controls are included in custom_nodes/framekit_h3.\nNo Pixaroma installation is needed."
       ],
       "color": "#1d1d1d",
       "bgcolor": "#2a2a2a",
@@ -407,7 +407,7 @@
       "title": "2. Duration FRAMEKIT",
       "properties": {
         "Node name for S&R": "FRAMEKITDuration",
-        "nexusAccent": "#f66744"
+        "framekitAccent": "#f66744"
       },
       "widgets_values": [
         "{\"seconds\": 15, \"values\": [3, 4, 5, 6, 7, 8, 9, 10, 12, 15]}"
@@ -446,8 +446,7 @@
       ],
       "title": "Load Image",
       "properties": {
-        "Node name for S&R": "LoadImage",
-        "nexusAccent": "#f66744"
+        "Node name for S&R": "LoadImage"
       },
       "widgets_values": [
         "bunny_black_suit.jpeg"
@@ -486,8 +485,7 @@
       ],
       "title": "Load Image",
       "properties": {
-        "Node name for S&R": "LoadImage",
-        "nexusAccent": "#f66744"
+        "Node name for S&R": "LoadImage"
       },
       "widgets_values": [
         "orange_outfit.jpeg"
@@ -526,8 +524,7 @@
       ],
       "title": "Load Image",
       "properties": {
-        "Node name for S&R": "LoadImage",
-        "nexusAccent": "#f66744"
+        "Node name for S&R": "LoadImage"
       },
       "widgets_values": [
         "exotic_background.jpeg"
@@ -569,7 +566,7 @@
       "title": "1. Pick Orientation and Size",
       "properties": {
         "Node name for S&R": "FRAMEKITSizes",
-        "nexusAccent": "#f66744"
+        "framekitAccent": "#f66744"
       },
       "widgets_values": [
         "{\"sizes\": [[416, 224], [608, 320], [736, 416], [832, 480], [928, 544], [1024, 576], [1120, 608], [1184, 672], [1280, 704], [1344, 736]], \"mp\": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0], \"selected\": 7, \"orientation\": \"landscape\", \"snap\": 32}"
@@ -654,7 +651,7 @@
       "outputs": [],
       "properties": {
         "Node name for S&R": "FRAMEKITSaveMP4",
-        "nexusAccent": "#f66744"
+        "framekitAccent": "#f66744"
       },
       "widgets_values": [
         24,
@@ -691,7 +688,7 @@
       "outputs": [],
       "properties": {
         "Node name for S&R": "FRAMEKITRunTimer",
-        "nexusAccent": "#f66744"
+        "framekitAccent": "#f66744"
       },
       "color": "#1d1d1d",
       "bgcolor": "#2a2a2a",
@@ -718,7 +715,7 @@
       "outputs": [],
       "properties": {
         "Node name for S&R": "FRAMEKITLabel",
-        "nexusAccent": "#f66744"
+        "framekitAccent": "#f66744"
       },
       "widgets_values": [
         "Minimax H3 - Reference Three Images"
@@ -837,7 +834,7 @@
       "title": "6. Prompt FRAMEKIT",
       "properties": {
         "Node name for S&R": "FRAMEKITPrompt",
-        "nexusAccent": "#f66744"
+        "framekitAccent": "#f66744"
       },
       "widgets_values": [
         "integrated_multimodal_description:\n\n[Shot 1 | 00:00–00:03.500]\nDY, realistic cinematic night interior of a small city hotel room. An adult Asian woman in her late 20s, wrapped in a simple towel, lies comfortably beside an adult Asian man in his early 30s on a slightly rumpled bed, her head resting heavily against his shoulder while he lies on his back looking quietly toward the ceiling. She looks physically exhausted, her eyelids heavy, her body completely relaxed against him. A warm bedside lamp mixes with cool blue city light entering through the window, creating soft cinematic shadows across their faces and the white bedding. The camera observes them in a quiet intimate medium two-shot from the side of the bed, slowly pushing closer.\n\nFor a moment neither speaks. Only their breathing and the distant city can be heard.\n\nThe woman slowly opens her tired eyes, glances toward the bedside clock without lifting her head, waits a beat, then says softly in natural Thai with a low, exhausted voice:\n\n“ได้เวลาแล้วนะ”\n\nShe closes her eyes again.\n\n[Shot 2 | 00:03.500–00:06.500]\nDY, cut to a cinematic close-up from above the man's shoulder, framing the woman's tired face still resting against him, loose strands of hair across the pillow while soft city reflections drift across the dark window behind her.\n\nSilence.\n\nThe man continues staring at the ceiling. After a short pause, he quietly murmurs:\n\n“อือ”\n\nHe becomes silent again.\n\nThe woman remains still for another beat, almost too tired to continue the conversation. Without lifting her head from his shoulder, she slowly opens her eyes and asks in a weak, sleepy natural Thai voice:\n\n“ไม่ต้องรีบกลับเหรอ?”\n\nShe finishes speaking and lets her eyes fall half closed again.\n\n[Shot 3 | 00:06.500–00:09.000]\nDY, cut to a close cinematic profile of the man from the woman's side, her head and hair softly blurred against his shoulder in the foreground. He does not answer immediately.\n\nHe takes a slow breath and continues looking toward the ceiling.\n\nAfter a quiet beat, he lowers his eyes slightly toward her and says softly in natural Thai:\n\n“ขออยู่แบบนี้อีกซักพักนะ?”\n\nHe stops speaking.\n\nThe room becomes quiet again.\n\n[Shot 4 | 00:09.000–00:11.500]\nDY, cut back to a close-up of the woman still lying heavily against his shoulder. She slowly raises her tired eyes toward him but does not move her head.\n\nShe studies him silently for a moment.\n\nA faint trace of amusement appears through her exhausted expression. In the same drained, matter-of-fact voice she quietly says:\n\n“คิดค่าตัวเพิ่มนะ”\n\nSilence.\n\nCut to the man's close profile. He gives the smallest nod, waits a beat, then murmurs:\n\n“อือ”\n\n[Shot 5 | 00:11.500–00:15.000]\nDY, cut to a wider cinematic side-profile two-shot of both of them still lying together on the bed, framed against the hotel window and distant city lights. Neither moves for a moment.\n\nThe woman lazily glances toward the bedside clock again.\n\nA quiet pause.\n\nInstead of getting up, she slowly settles her head more comfortably back onto his shoulder, releases a tired breath and closes her eyes.\n\nAfter another small beat, she murmurs softly in natural Thai, almost with her eyes already closed:\n\n“แค่ครั้งนี้นะ”\n\nSilence.\n\nThe man turns only his eyes toward her, slightly surprised.\n\nShe is already resting peacefully against his shoulder, too exhausted to look back at him.\n\nHe watches her for a moment without saying anything, then slowly looks back toward the ceiling.\n\nThe camera gently pulls away, leaving both of them lying quietly beneath the warm bedside light and cool blue city glow.\n\nHard cut.\n\noverall_soundscape:\nQuiet late-night hotel ambience, low air-conditioning hum, distant traffic filtered through the window, subtle bedding movement and slow natural breathing. Silence between every exchange is important. Neither character responds immediately after the other finishes speaking. Their conversation feels unhurried, tired and private.\n\nThe woman's Thai voice is consistently soft, low, slow and physically exhausted, with heavy sleepy breathing and almost no performative emotion. She sounds like someone at the end of a very long night, speaking only because she has to, never seductive, playful or energetic.\n\nThe man's voice is equally quiet and restrained, but slightly more awake than hers. His replies come only after short natural pauses.\n\nnon_diegetic_music:\nAlmost no music. A barely audible warm cinematic texture enters only during the final moment when the woman settles her head back onto his shoulder. No sentimental swell. Let the silence, breathing and distant city ambience carry the scene."
@@ -1165,7 +1162,7 @@
       "title": "OUTPUT B — SEED COMPARISON",
       "properties": {
         "Node name for S&R": "FRAMEKITSaveMP4",
-        "nexusAccent": "#f66744"
+        "framekitAccent": "#f66744"
       },
       "widgets_values": [
         24,
