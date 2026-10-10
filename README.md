@@ -3,11 +3,10 @@
 Based on the provided 30-node workflow. Only **ComfyUI Core** and **ComfyUI-Pixaroma** are required by its nodes; no KJNodes, Civicomfy or RunpodDirect. ComfyUI Manager is optional and not installed.
 
 ## Contents
-- `workflows/Minimax_H3_ref2va_original.json`: exact user-provided workflow, unchanged.
-- `workflows/Minimax_H3_ref2va.json`: deployment-ready default. Removes two **bypassed, strength-zero** LoRA loader nodes referencing unavailable `HMBreastsV2.safetensors` and `H3_ta86_inkriot.safetensors`; rewires Turbo directly to Sigma Shift. Reference image/audio filenames are placeholders; supply your own before running.
+- `workflows/Minimax_H3_ref2va.json`: **exact user-provided workflow, unchanged**, including both optional bypassed LoRA nodes, original links, settings and mode flags.
 - `Dockerfile`: ComfyUI plus Pixaroma only.
 - `startup.sh`: persistent data in `/workspace/ComfyUI`, automatic model downloads before ComfyUI starts.
-- `download_models.sh`: five selected model files; no weights stored in GitHub or Docker image.
+- `download_models.sh`: five required weights including Turbo LoRA. **Does not download `HMBreastsV2.safetensors` or `H3_ta86_inkriot.safetensors`** because their nodes are bypassed (mode 4); the nodes remain in the workflow.
 
 ## Runpod template settings
 - Container image: `ghcr.io/unfounddev/runpod-minimax-h3:latest` **after GitHub Actions build succeeds and GHCR package is made public**.
@@ -18,6 +17,6 @@ Based on the provided 30-node workflow. Only **ComfyUI Core** and **ComfyUI-Pixa
 
 ## Important limitations
 - **Not yet built or deployed**. Base image tag, upstream commits and dependencies still require a real GitHub Actions build and clean GPU Pod test.
-- Workflow includes bypassed reference image and optional audio nodes; upload your own images/audio and enable relevant nodes before execution.
+- Workflow includes bypassed optional LoRA, reference image and audio nodes; upload your own images/audio and enable relevant nodes before execution.
 - Check licenses and commercial/public-template terms of MiniMax H3, Singularity, LightX2V, Pixaroma before publishing.
 - This is not an official MiniMax or Pixaroma image.

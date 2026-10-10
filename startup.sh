@@ -10,7 +10,6 @@ for d in models input output temp; do
   fi
 done
 cp -n /opt/template/Minimax_H3_ref2va.json "$BASE/user/default/workflows/Minimax_H3_ref2va.json"
-cp -n /opt/template/Minimax_H3_ref2va_original.json "$BASE/user/default/workflows/Minimax_H3_ref2va_original.json"
 # ComfyUI user directory must also point to persistent storage, otherwise saved workflows may be invisible.
 mkdir -p /opt/ComfyUI/user/default/workflows
 cp -n /opt/template/Minimax_H3_ref2va.json /opt/ComfyUI/user/default/workflows/Minimax_H3_ref2va.json
