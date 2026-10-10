@@ -16,7 +16,9 @@ def browser_config(root, username, password):
         raise ValueError("FILE_BROWSER_PASSWORD needs 12–128 characters: letters, numbers or !@$_.+-")
     if "\n" in str(root) or "\r" in str(root):
         raise ValueError("Invalid workspace path")
-    return f"[accounts]\n  {username}: {password}\n\n[/]\n  {root}\n  accs:\n    rwmd: {username}\n"
+    # Runpod Container Disk uses an overlay filesystem; permit writes on this volume.
+    # Container-only files still disappear when the Pod storage is discarded.
+    return f"[accounts]\n  {username}: {password}\n\n[/]\n  {root}\n  accs:\n    rwmd: {username}\n  flags:\n    wram\n"
 
 
 def browser_command(config, port=8080, address="0.0.0.0"):
