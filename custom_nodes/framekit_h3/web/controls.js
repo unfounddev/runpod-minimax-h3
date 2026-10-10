@@ -41,6 +41,10 @@ css.textContent = `
 .framekit-dialog textarea{height:130px}
 .framekit-shell{display:flex;flex-direction:column;width:100%;height:100%;overflow:hidden;--accent:${ACCENT}}
 .framekit-shell>.framekit-control{flex:1;min-height:0}
+.framekit-control.framekit-prompt{display:flex;flex-direction:column;overflow:hidden}
+.framekit-prompt>.framekit-row{flex:none;flex-wrap:wrap}
+.framekit-control.framekit-prompt>textarea{display:block;flex:1;min-height:0;height:0;
+  overflow:auto;resize:none}
 .framekit-tools{display:flex;justify-content:flex-end;align-items:center;gap:6px;padding:4px 9px;font:11px 'Segoe UI',sans-serif;color:#aaa}
 .framekit-tools button{cursor:pointer;background:rgba(255,255,255,.05);border:1px solid #555;border-radius:4px;color:#ddd;padding:3px 7px}
 .framekit-tools button:hover{border-color:var(--accent)}
@@ -224,6 +228,7 @@ function initialize(node, kind) {
     const widget=node.widgets.find(w=>w.name==="state");hiddenWidget(widget);
     settingsUI(node,root,widget,kind);
   } else if (kind==="FRAMEKITPrompt") {
+    root.classList.add("framekit-prompt");
     const widget=node.widgets.find(w=>w.name==="text");hiddenWidget(widget);
     const toolbar=element("div",undefined,"framekit-row");
     const area=element("textarea");area.placeholder="Describe the shot, dialogue and sound…";
