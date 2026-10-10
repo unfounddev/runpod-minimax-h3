@@ -261,7 +261,8 @@ function initialize(node, kind) {
     const readout=element("div","Preview appears after generation","framekit-readout");
     root.append(video,readout);
     hook(node,"onExecuted",message=>{
-      if(message?.videos?.[0]){video.src=viewURL(message.videos[0]);video.load();}
+      const clip=message?.images?.[0] || message?.videos?.[0];
+      if(clip){const {filename,subfolder,type}=clip;video.src=viewURL({filename,subfolder,type});video.load();}
       readout.textContent=message?.text?.join("\n")||"Saved";
     });
   } else if(kind==="FRAMEKITRunTimer") {
