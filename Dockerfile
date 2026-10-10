@@ -15,6 +15,7 @@ RUN git clone https://github.com/Comfy-Org/ComfyUI.git /opt/ComfyUI \
 COPY custom_nodes/nexus_h3 /opt/ComfyUI/custom_nodes/nexus_h3
 RUN mkdir -p /opt/template
 COPY startup.sh download_models.sh /opt/template/
+RUN sed -i 's/\r$//' /opt/template/startup.sh /opt/template/download_models.sh
 COPY services.py /opt/template/services.py
 RUN python -m pip install copyparty==1.20.25
 COPY tests/smoke_browser.py /opt/template/smoke_browser.py
