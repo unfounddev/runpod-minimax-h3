@@ -2,17 +2,20 @@
 FROM pytorch/pytorch:2.10.0-cuda13.0-cudnn9-runtime
 ENV DEBIAN_FRONTEND=noninteractive PIP_NO_CACHE_DIR=1 PYTHONUNBUFFERED=1
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    git ffmpeg curl ca-certificates libgl1 libglib2.0-0 \
+    git ffmpeg curl ca-certificates libgl1 libglib2.0-0 python3-venv \
     && rm -rf /var/lib/apt/lists/*
+RUN python3 -m venv --system-site-packages /opt/venv
+ENV VIRTUAL_ENV=/opt/venv
+ENV PATH="/opt/venv/bin:${PATH}"
 WORKDIR /opt
 RUN git clone https://github.com/Comfy-Org/ComfyUI.git /opt/ComfyUI \
     && cd /opt/ComfyUI \
     && git checkout 3c1b7a17 \
-    && pip install -r requirements.txt
+    && python -m pip install -r requirements.txt
 RUN git clone https://github.com/pixaroma/ComfyUI-Pixaroma.git /opt/ComfyUI/custom_nodes/ComfyUI-Pixaroma \
     && cd /opt/ComfyUI/custom_nodes/ComfyUI-Pixaroma \
     && git checkout e464839a \
-    && if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    && if [ -f requirements.txt ]; then python -m pip install -r requirements.txt; fi
 RUN mkdir -p /opt/template
 COPY workflows/Minimax_H3_ref2va.json /opt/template/Minimax_H3_ref2va.json
 COPY startup.sh download_models.sh /opt/template/
