@@ -2,10 +2,10 @@
 import json
 import math
 
-SIZES = [[608,352],[736,416],[864,480],[960,544],[1056,608],[1152,640],
-         [1216,672],[1280,736],[1344,768],[1376,768],[1504,832],[1664,928],
-         [1824,1024],[1920,1088]]
-SIZE_DEFAULT = {"sizes": SIZES, "selected": 6, "orientation": "landscape", "snap": 32}
+SIZES = [[416,224],[608,320],[736,416],[832,480],[928,544],
+         [1024,576],[1120,608],[1184,672],[1280,704],[1344,736]]
+SIZE_DEFAULT = {"sizes": SIZES, "mp": [n / 10 for n in range(1, 11)],
+                "selected": 7, "orientation": "landscape", "snap": 32}
 DURATION_DEFAULT = {"seconds": 5, "values": [3,4,5,6,7,8,9,10,12,15]}
 
 
@@ -29,7 +29,7 @@ def duration(state):
 def size(state):
     state = parse_state(state)
     pairs = state.get("sizes", SIZES)
-    index = int(state.get("selected", 6))
+    index = int(state.get("selected", 7))
     if not pairs or not 0 <= index < len(pairs):
         raise ValueError("Choose a valid video size")
     a, b = sorted(map(int, pairs[index]))
