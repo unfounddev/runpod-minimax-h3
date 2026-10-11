@@ -15,6 +15,11 @@ RUN git clone https://github.com/Comfy-Org/ComfyUI.git /opt/ComfyUI \
 COPY patch_comfy_proxy.py /opt/template/patch_comfy_proxy.py
 RUN python /opt/template/patch_comfy_proxy.py /opt/ComfyUI
 COPY custom_nodes/framekit_h3 /opt/ComfyUI/custom_nodes/framekit_h3
+ARG RUNPOD_DIRECT_REV=9e32b1a09577347f77944a75096c1a1f726cd2c3
+RUN git clone https://github.com/MadiatorLabs/ComfyUI-RunpodDirect.git /opt/ComfyUI/custom_nodes/ComfyUI-RunpodDirect \
+    && git -C /opt/ComfyUI/custom_nodes/ComfyUI-RunpodDirect checkout --detach "$RUNPOD_DIRECT_REV" \
+    && python -m pip install 'aiohttp>=3.8.0' \
+    && python -m py_compile /opt/ComfyUI/custom_nodes/ComfyUI-RunpodDirect/__init__.py
 RUN mkdir -p /opt/template
 COPY startup.sh download_models.sh /opt/template/
 RUN sed -i 's/\r$//' /opt/template/startup.sh /opt/template/download_models.sh
