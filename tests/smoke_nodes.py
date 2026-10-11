@@ -120,7 +120,7 @@ if opts.workflow:
             values=node.get("widgets_values",[])
             assert len(values)==len(widget_names),(node["id"],widget_names,values)
             options=dict(zip(widget_names,values))
-            if node["type"]=="FRAMEKITSizes":assert cls().run(**options)==(1184,672)
+            if node["type"]=="FRAMEKITSizes":assert cls().run(**options)==(960,544)
             if node["type"]=="FRAMEKITDuration":assert cls().run(**options)[0]==362
             if node["type"]=="FRAMEKITSaveMP4":
                 assert options["audio_mode"]=="normalize" and options["target_lufs"]==-16
