@@ -111,45 +111,67 @@ function dialog(title, text, onSave) {
   modal.onclose = ()=>modal.remove(); modal.showModal();
 }
 
+const appearanceDefaults = {Header: "353535", Body: "202020", Accent: "f66744", LabelFontSize: 28};
+const appearanceValues = {...appearanceDefaults};
+const appearanceListeners = new Set();
+function refreshAppearance() {
+  for (const apply of appearanceListeners) apply();
+}
+function appearanceSetting(key, name, type) {
+  return {
+    id: `FRAMEKIT.Appearance.${key}`, name, type,
+    category: ["FRAMEKIT", "Appearance", name],
+    defaultValue: appearanceDefaults[key],
+    ...(type === "number" ? {attrs: {min: 12, max: 48, step: 1, maxFractionDigits: 0}} : {}),
+    onChange(value) {
+      if (type === "color") {
+        const hex=String(value).replace(/^#/, "");
+        if (!/^[0-9a-f]{6}$/i.test(hex)) return;
+        appearanceValues[key]=hex;
+      } else {
+        const size=Number(value);
+        if (!Number.isFinite(size)) return;
+        appearanceValues[key]=Math.max(12,Math.min(48,Math.round(size)));
+      }
+      refreshAppearance();
+    }
+  };
+}
+const appearanceSettings = [
+  appearanceSetting("Header", "Node header background", "color"),
+  appearanceSetting("Body", "Node body background", "color"),
+  appearanceSetting("Accent", "Buttons and accent", "color"),
+  appearanceSetting("LabelFontSize", "Label font size", "number"),
+  {
+    id: "FRAMEKIT.Appearance.Reset", name: "Restore default appearance",
+    category: ["FRAMEKIT", "Appearance", "Restore default appearance"],
+    type: "boolean", defaultValue: false,
+    tooltip: "Turn on to restore the appearance of every FRAMEKIT node. Resets automatically.",
+    async onChange(value) {
+      if (!value) return;
+      const settings=app.extensionManager.setting;
+      for (const [key, initial] of Object.entries(appearanceDefaults)) {
+        await settings.set(`FRAMEKIT.Appearance.${key}`, initial);
+      }
+      await settings.set("FRAMEKIT.Appearance.Reset", false);
+    }
+  }
+];
 function installAppearance(node, shell, root) {
-  const accent = ()=>node.properties?.framekitAccent || node.properties?.nexusAccent || ACCENT;
   function apply() {
-    shell.style.setProperty('--accent',accent());
-    root.style.setProperty('--accent',accent());
-    if(node.properties?.framekitHeader)node.color=node.properties.framekitHeader;
-    shell.style.background=node.properties?.framekitPanel || 'transparent';
-    root.style.setProperty('--label-size',`${node.properties?.framekitFontSize || 28}px`);
+    const accent=`#${appearanceValues.Accent}`;
+    shell.style.setProperty('--accent',accent);
+    root.style.setProperty('--accent',accent);
+    node.color=`#${appearanceValues.Header}`;
+    node.bgcolor=`#${appearanceValues.Body}`;
+    shell.style.background=node.bgcolor;
+    root.style.setProperty('--label-size',`${appearanceValues.LabelFontSize}px`);
     node.setDirtyCanvas(true,true);
   }
-  function open() {
-    const modal=element('dialog',undefined,'framekit-dialog');
-    const panel=element('div',undefined,'framekit-control');panel.append(dialogHeader(modal,'FRAMEKIT · Appearance'));
-    const palette=element('div',undefined,'framekit-palette');
-    const picker=element('input');picker.type='color';picker.value=accent();
-    let headerPicker;
-    const change=(color)=>{node.properties.framekitAccent=color;node.properties.framekitHeader=color;node.color=color;picker.value=color;if(headerPicker)headerPicker.value=color;apply();};
-    for(const color of ['#f66744','#e6b94d','#64c27b','#4dbbd5','#668deb','#b77bea','#e879ab','#c0c0c0']) {
-      const swatch=button('',()=>change(color));swatch.style.background=color;swatch.title=color;palette.append(swatch);
-    }
-    picker.oninput=()=>change(picker.value);panel.append(element('div','Header and button color'),palette,picker);
-    for(const [label,key,fallback] of [['Node header background','color','#353535'],['Body color','bgcolor','#202020']]) {
-      const row=element('div',undefined,'framekit-row');row.append(element('span',label));
-      const input=element('input');input.type='color';input.value=/^#[0-9a-f]{6}$/i.test(node[key])?node[key]:fallback;
-      if(key==='color')headerPicker=input;
-      input.oninput=()=>{node[key]=input.value;if(key==='color')node.properties.framekitHeader=input.value;if(key==='bgcolor')node.properties.framekitPanel=input.value;apply();};row.append(input);panel.append(row);
-    }
-    const size=element('input');size.type='number';size.min='12';size.max='48';size.value=node.properties.framekitFontSize||28;
-    size.onchange=()=>{if(size.checkValidity()){node.properties.framekitFontSize=Number(size.value);apply();}};
-    const row=element('div',undefined,'framekit-row');row.append(element('span','Label font size'),size);panel.append(row);
-    panel.append(button('Reset accent',()=>change(ACCENT)),button('Done',()=>modal.close(),true));
-    modal.append(panel);document.body.append(modal);modal.onclose=()=>modal.remove();modal.showModal();
-  }
-  const toolbar=element('div',undefined,'framekit-tools');
-  const settings=button('⚙',open);settings.title='Appearance: button, title and body colors';settings.setAttribute('aria-label','FRAMEKIT appearance');
-  toolbar.append(settings);shell.prepend(toolbar);
-  const previous=node.getExtraMenuOptions;
-  node.getExtraMenuOptions=function(canvas,options){previous?.call(this,canvas,options);options.push({content:'FRAMEKIT appearance…',callback:open});};
-  hook(node,'onConfigure',()=>queueMicrotask(apply));apply();
+  appearanceListeners.add(apply);
+  hook(node,'onRemoved',()=>appearanceListeners.delete(apply));
+  hook(node,'onConfigure',()=>queueMicrotask(apply));
+  apply();
 }
 
 function settingsUI(node, root, widget, kind) {
@@ -232,7 +254,7 @@ function initialize(node, kind) {
   node.properties ||= {};
   const shell=element('div',undefined,'framekit-shell');
   const root = element("div",undefined,"framekit-control");
-  root.style.setProperty("--accent",node.properties?.framekitAccent||ACCENT);
+  root.style.setProperty("--accent",`#${appearanceValues.Accent}`);
   shell.append(root);
   const dom = node.addDOMWidget("framekit_ui","framekit_controls",shell,{serialize:false,
     getMinHeight:()=>kind==="FRAMEKITSizes"?410:kind==="FRAMEKITSaveMP4"?60:kind==="FRAMEKITPrompt"?170:90});
@@ -296,6 +318,7 @@ api.addEventListener("executing",event=>{if(event.detail===null)finish();});
 
 app.registerExtension({
   name:"FRAMEKIT.H3.Controls",
+  settings: appearanceSettings,
   beforeRegisterNodeDef(nodeType,nodeData) {
     if(!/^(FRAMEKIT|NEXUS)/.test(nodeData.name)||nodeData.name.endsWith("LoadImage"))return;
     const previous=nodeType.prototype.onNodeCreated;
