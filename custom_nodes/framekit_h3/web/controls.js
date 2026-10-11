@@ -50,6 +50,9 @@ css.textContent = `
 .framekit-tools button:hover{border-color:var(--accent)}
 .framekit-palette{display:flex;gap:7px;margin:10px 0;flex-wrap:wrap}
 .framekit-palette button{width:25px;height:25px;border-radius:5px;padding:0;border:1px solid #999}
+.framekit-dialog-header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.framekit-dialog-header h3{margin:0}
+.framekit-dialog-header button{font-size:22px;line-height:1;padding:4px 9px}
 .framekit-label{font-size:var(--label-size,28px)}
 `;
 document.head.append(css);
@@ -83,10 +86,17 @@ function hook(node, name, callback) {
     return result;
   };
 }
+function dialogHeader(modal, title) {
+  const header=element('div',undefined,'framekit-dialog-header');
+  const close=button('×',()=>modal.close());
+  close.title='Close';close.setAttribute('aria-label','Close settings');
+  header.append(element('h3',title),close);
+  return header;
+}
 function dialog(title, text, onSave) {
   const modal = element("dialog",undefined,"framekit-dialog");
   const root = element("div",undefined,"framekit-control");
-  root.append(element("h3",title));
+  root.append(dialogHeader(modal,title));
   const input = element("textarea");
   input.value = text;
   root.append(input);
@@ -106,29 +116,32 @@ function installAppearance(node, shell, root) {
   function apply() {
     shell.style.setProperty('--accent',accent());
     root.style.setProperty('--accent',accent());
+    if(node.properties?.framekitHeader)node.color=node.properties.framekitHeader;
     shell.style.background=node.properties?.framekitPanel || 'transparent';
     root.style.setProperty('--label-size',`${node.properties?.framekitFontSize || 28}px`);
     node.setDirtyCanvas(true,true);
   }
   function open() {
     const modal=element('dialog',undefined,'framekit-dialog');
-    const panel=element('div',undefined,'framekit-control');panel.append(element('h3','FRAMEKIT · Appearance'));
+    const panel=element('div',undefined,'framekit-control');panel.append(dialogHeader(modal,'FRAMEKIT · Appearance'));
     const palette=element('div',undefined,'framekit-palette');
     const picker=element('input');picker.type='color';picker.value=accent();
-    const change=(color)=>{node.properties.framekitAccent=color;picker.value=color;apply();};
+    let headerPicker;
+    const change=(color)=>{node.properties.framekitAccent=color;node.properties.framekitHeader=color;node.color=color;picker.value=color;if(headerPicker)headerPicker.value=color;apply();};
     for(const color of ['#f66744','#e6b94d','#64c27b','#4dbbd5','#668deb','#b77bea','#e879ab','#c0c0c0']) {
       const swatch=button('',()=>change(color));swatch.style.background=color;swatch.title=color;palette.append(swatch);
     }
-    picker.oninput=()=>change(picker.value);panel.append(element('div','Button / accent color'),palette,picker);
-    for(const [label,key,fallback] of [['Title color','color','#353535'],['Body color','bgcolor','#202020']]) {
+    picker.oninput=()=>change(picker.value);panel.append(element('div','Header and button color'),palette,picker);
+    for(const [label,key,fallback] of [['Node header background','color','#353535'],['Body color','bgcolor','#202020']]) {
       const row=element('div',undefined,'framekit-row');row.append(element('span',label));
       const input=element('input');input.type='color';input.value=/^#[0-9a-f]{6}$/i.test(node[key])?node[key]:fallback;
-      input.oninput=()=>{node[key]=input.value;if(key==='bgcolor')node.properties.framekitPanel=input.value;apply();};row.append(input);panel.append(row);
+      if(key==='color')headerPicker=input;
+      input.oninput=()=>{node[key]=input.value;if(key==='color')node.properties.framekitHeader=input.value;if(key==='bgcolor')node.properties.framekitPanel=input.value;apply();};row.append(input);panel.append(row);
     }
     const size=element('input');size.type='number';size.min='12';size.max='48';size.value=node.properties.framekitFontSize||28;
     size.onchange=()=>{if(size.checkValidity()){node.properties.framekitFontSize=Number(size.value);apply();}};
     const row=element('div',undefined,'framekit-row');row.append(element('span','Label font size'),size);panel.append(row);
-    panel.append(button('Reset accent',()=>{delete node.properties.framekitAccent;delete node.properties.nexusAccent;picker.value=ACCENT;apply();}),button('Done',()=>modal.close(),true));
+    panel.append(button('Reset accent',()=>change(ACCENT)),button('Done',()=>modal.close(),true));
     modal.append(panel);document.body.append(modal);modal.onclose=()=>modal.remove();modal.showModal();
   }
   const toolbar=element('div',undefined,'framekit-tools');
