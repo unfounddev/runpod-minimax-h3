@@ -31,8 +31,8 @@ fetch "$BASE/vae/minimax_h3_video_vae_fp16.safetensors" \
   "$M/vae/minimax_h3_video_vae_fp16.safetensors"
 fetch "$BASE/vae/minimax_h3_audio_vae_fp32.safetensors" \
   "$M/vae/minimax_h3_audio_vae_fp32.safetensors"
-fetch "${TURBO_LORA_URL:-https://huggingface.co/lightx2v/Minimax-h3-Turbo/resolve/main/minimax_h3_ref2v_turbo_8step_v1.0_768p_comfyui_bf16.safetensors}" \
-  "$M/loras/minimax_h3_ref2v_turbo_8step_v1.0_768p_comfyui_bf16.safetensors"
+fetch "${TURBO_LORA_URL:-https://huggingface.co/lightx2v/Minimax-h3-Turbo/resolve/main/minimax_h3_ref2v_turbo_4step_v0.1_comfyui_bf16.safetensors}" \
+  "$M/loras/minimax_h3_ref2v_turbo_4step_v0.1_comfyui_bf16.safetensors"
 
 echo "Required model downloads completed."
 # Deliberately DO NOT fetch bypassed optional LoRAs:
