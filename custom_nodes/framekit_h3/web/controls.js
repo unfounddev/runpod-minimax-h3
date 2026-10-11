@@ -13,20 +13,20 @@ let runStarted = 0, elapsed = 0, running = false;
 const css = document.createElement("style");
 css.textContent = `
 .framekit-control{font:12px 'Segoe UI',sans-serif;color:#dedede;box-sizing:border-box;
-  padding:9px;width:100%;height:100%;overflow:auto;--accent:${ACCENT}}
+  padding:9px;width:100%;max-width:100%;min-width:0;height:100%;overflow-x:hidden;overflow-y:auto;--accent:${ACCENT}}
 .framekit-control *{box-sizing:border-box}
-.framekit-row{display:flex;gap:6px;align-items:center;margin-bottom:8px}
+.framekit-row{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:8px;min-width:0;max-width:100%}
 .framekit-control button{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05);color:#ccc;border-radius:5px;
   padding:6px 8px;cursor:pointer;font:inherit}
 .framekit-control button:hover{border-color:var(--accent);color:white}
 .framekit-control button.active{background:var(--accent);color:white;border-color:var(--accent)}
-.framekit-control .framekit-orientation{flex:1}
+.framekit-control .framekit-orientation{flex:1 1 70px;min-width:0}
 .framekit-list{background:rgba(0,0,0,.28);border:1px solid #333;border-radius:6px;overflow:hidden}
 .framekit-control .framekit-size{display:block;width:100%;height:30px;border:0;border-radius:0;background:transparent}
 .framekit-control .framekit-size.active{background:rgba(255,255,255,.06);color:var(--accent);font-weight:600}
-.framekit-chiprow{display:flex;gap:4px;flex-wrap:nowrap;overflow:hidden}
-.framekit-chiprow button{flex:1;min-width:28px;padding:5px 3px}
-.framekit-readout{color:#aaa;margin-top:7px;font-size:11px;text-align:center}
+.framekit-chiprow{display:flex;gap:4px;flex-wrap:wrap;min-width:0}
+.framekit-chiprow button{flex:1 1 32px;min-width:28px;padding:5px 3px}
+.framekit-readout{color:#aaa;margin-top:7px;font-size:11px;text-align:center;white-space:normal;overflow-wrap:anywhere;min-width:0;max-width:100%}
 .framekit-control input,.framekit-control select,.framekit-control textarea{background:#222;color:#eee;
   border:1px solid #555;border-radius:4px;padding:6px;font:inherit}
 .framekit-control input[type=number]{width:75px}
@@ -39,11 +39,11 @@ css.textContent = `
 .framekit-dialog::backdrop{background:#0009}
 .framekit-dialog .framekit-control{height:auto}
 .framekit-dialog textarea{height:130px}
-.framekit-shell{display:flex;flex-direction:column;width:100%;height:100%;overflow:hidden;--accent:${ACCENT}}
-.framekit-shell>.framekit-control{flex:1;min-height:0}
+.framekit-shell{display:flex;flex-direction:column;width:100%;max-width:100%;min-width:0;height:100%;box-sizing:border-box;overflow:hidden;--accent:${ACCENT}}
+.framekit-shell>.framekit-control{flex:1 1 0;min-height:0;min-width:0;align-self:stretch}
 .framekit-control.framekit-prompt{display:flex;flex-direction:column;overflow:hidden}
 .framekit-prompt>.framekit-row{flex:none;flex-wrap:wrap}
-.framekit-control.framekit-prompt>textarea{display:block;flex:1;min-height:0;height:0;
+.framekit-control.framekit-prompt>textarea{display:block;flex:1 1 0;align-self:stretch;width:100%;max-width:100%;min-width:0;min-height:0;height:0;
   overflow:auto;resize:none}
 .framekit-tools{display:flex;justify-content:flex-end;align-items:center;gap:6px;padding:4px 9px;font:11px 'Segoe UI',sans-serif;color:#aaa}
 .framekit-tools button{cursor:pointer;background:rgba(255,255,255,.05);border:1px solid #555;border-radius:4px;color:#ddd;padding:3px 7px}
