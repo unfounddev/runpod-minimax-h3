@@ -4,8 +4,8 @@ import { api } from "../../../scripts/api.js";
 // Picker/chip styling adapted from Pixaroma's MIT-licensed Sizes/Duration UI.
 // Copyright (c) 2026 pixaroma; see THIRD_PARTY_LICENSE.txt.
 const ACCENT = "#f66744";
-const sizes = [[416, 224], [608, 320], [736, 416], [832, 480], [928, 544], [1024, 576], [1120, 608], [1184, 672], [1280, 704], [1344, 736]];
-const sizeDefault = {"sizes": [[416, 224], [608, 320], [736, 416], [832, 480], [928, 544], [1024, 576], [1120, 608], [1184, 672], [1280, 704], [1344, 736]], "mp": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0], "selected": 7, "orientation": "landscape", "snap": 32};
+const sizes = [[416,224],[640,352],[864,480],[960,544],[1024,576],[1152,640],[1280,736],[1344,768]];
+const sizeDefault = {sizes, selected:7, orientation:"landscape", snap:32, version:2};
 const durationDefault = {seconds:5, values:[3,4,5,6,7,8,9,10,12,15]};
 const roots = new Set();
 let runStarted = 0, elapsed = 0, running = false;
@@ -176,7 +176,20 @@ function installAppearance(node, shell, root) {
 
 function settingsUI(node, root, widget, kind) {
   function read() {
-    try { return {...(kind==="FRAMEKITSizes"?sizeDefault:durationDefault),...JSON.parse(widget.value)}; }
+    try { const state={...(kind==="FRAMEKITSizes"?sizeDefault:durationDefault),...JSON.parse(widget.value)};
+      if(kind==="FRAMEKITSizes") {
+        state.snap=32;
+        // Migrate the former MP preset list while preserving the closest pixel area.
+        if(state.mp?.length && !JSON.parse(widget.value).version) {
+          const old=state.sizes[state.selected]||sizes[7];
+          const area=old[0]*old[1];
+          state.sizes=sizes;
+          state.selected=sizes.reduce((best,pair,index)=>Math.abs(pair[0]*pair[1]-area)<Math.abs(sizes[best][0]*sizes[best][1]-area)?index:best,0);
+          delete state.mp;
+        }
+        state.version=2;
+      }
+      return state; }
     catch { return structuredClone(kind==="FRAMEKITSizes"?sizeDefault:durationDefault); }
   }
   function update(state) {
@@ -200,11 +213,11 @@ function settingsUI(node, root, widget, kind) {
             const match = line.trim().match(/^(\d+)\s*[x×,]\s*(\d+)$/i);
             if (!match) throw Error("Use W × H, for example 1216 × 672");
             const pair = [Number(match[1]),Number(match[2])];
-            if (pair.some(n=>n<64||n>4096)) throw Error("Dimensions: 64–4096 pixels");
+            if (pair.some(n=>n<64||n>4096||n%32!==0)) throw Error("Each dimension must be 64–4096 pixels and divisible by 32");
             return pair;
           });
           if (pairs.length>40) throw Error("Use at most 40 sizes");
-          update({...state,sizes:pairs,mp:[],selected:Math.min(state.selected,pairs.length-1)});
+          update({...state,sizes:pairs,selected:Math.min(state.selected,pairs.length-1)});
         }));
       settings.title = "Edit size list"; row.append(settings); root.append(row);
       const list = element("div",undefined,"framekit-list");
@@ -214,19 +227,18 @@ function settingsUI(node, root, widget, kind) {
         if (state.orientation==="landscape") ordered.reverse();
         const [w,h] = ordered.map(n=>Math.round(n/state.snap)*state.snap);
         const starred = state.starred?.includes(`${w}x${h}`);
-        const mp=state.mp?.[index];
-        list.append(button(`${mp?mp.toFixed(1)+' MP · ':''}${w} × ${h}${starred?"  ★":""}`,
+        list.append(button(`${w} × ${h}${w===1344&&h===768||w===768&&h===1344?" · Turbo 768p":""}${starred?"  ★":""}`,
           ()=>update({...state,selected:index}),index===state.selected,"framekit-size"));
       });
       root.append(list);
       const footer = element("div",undefined,"framekit-row");
-      footer.style.marginTop = "7px"; footer.append(element("span","Snap"));
-      const select = element("select");
-      for(const n of [8,16,32,64]){const opt=element("option",String(n));opt.value=n;select.append(opt);}
-      select.value=state.snap; select.onchange=()=>update({...state,snap:Number(select.value)});
-      footer.append(select,button('Standard MP',()=>update({...sizeDefault,orientation:state.orientation,selected:Math.min(state.selected,9)})));root.append(footer);
-      const selected=state.sizes[state.selected];
-      root.append(element('div',`Actual area ≈ ${(selected[0]*selected[1]/1e6).toFixed(3)} MP · dimensions snap to ${state.snap}px`,'framekit-readout'));
+      footer.style.marginTop = "7px";
+      footer.append(button('Standard sizes',()=>update({...sizeDefault,orientation:state.orientation})));
+      root.append(footer);
+      root.append(element('div','32-pixel grid · Turbo 768p: 1344 × 768 or 768 × 1344','framekit-readout'));
+      // Persist migrated presets so Python receives exactly the dimensions shown.
+      widget.value=JSON.stringify(state);
+
     } else {
       const row = element("div",undefined,"framekit-chiprow");
       for (const seconds of state.values) row.append(button(`${seconds}s`,
