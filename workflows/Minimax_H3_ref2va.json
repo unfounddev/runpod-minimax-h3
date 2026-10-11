@@ -569,7 +569,7 @@
         "framekitAccent": "#f66744"
       },
       "widgets_values": [
-        "{\"sizes\": [[416, 224], [608, 320], [736, 416], [832, 480], [928, 544], [1024, 576], [1120, 608], [1184, 672], [1280, 704], [1344, 736]], \"mp\": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0], \"selected\": 7, \"orientation\": \"landscape\", \"snap\": 32}"
+        "{\"sizes\": [[416, 224], [640, 352], [864, 480], [960, 544], [1024, 576], [1152, 640], [1280, 736], [1344, 768]], \"selected\": 3, \"orientation\": \"landscape\", \"snap\": 32, \"version\": 2}"
       ],
       "color": "#14436c",
       "bgcolor": "#2a2a2a"
@@ -779,7 +779,7 @@
       "widgets_values": [
         952394412728861,
         "randomize",
-        8,
+        4,
         1,
         "euler",
         "simple",
@@ -788,7 +788,7 @@
       "widgets_values_named": {
         "seed": 952394412728861,
         "control_after_generate": "randomize",
-        "steps": 8,
+        "steps": 4,
         "cfg": 1,
         "sampler_name": "euler",
         "scheduler": "simple",
@@ -1018,7 +1018,7 @@
       "widgets_values": [
         981198124168561,
         "randomize",
-        8,
+        4,
         1,
         "euler",
         "simple",
@@ -1027,7 +1027,7 @@
       "widgets_values_named": {
         "seed": 981198124168561,
         "control_after_generate": "randomize",
-        "steps": 8,
+        "steps": 4,
         "cfg": 1,
         "sampler_name": "euler",
         "scheduler": "simple",
@@ -1326,18 +1326,18 @@
           ]
         }
       ],
-      "title": "H3 SIGMA SHIFT — Turbo video 6 / audio 3",
+      "title": "H3 SIGMA SHIFT — Turbo video 12 / audio 3",
       "properties": {
         "cnr_id": "comfy-core",
         "ver": "0.30.0",
         "Node name for S&R": "MiniMaxH3SigmaShift"
       },
       "widgets_values": [
-        6,
+        12,
         3
       ],
       "widgets_values_named": {
-        "shift_video": 6,
+        "shift_video": 12,
         "shift_audio": 3
       }
     },
@@ -1378,11 +1378,11 @@
         "Node name for S&R": "LoraLoaderModelOnly"
       },
       "widgets_values": [
-        "minimax_h3_ref2v_turbo_8step_v1.0_768p_comfyui_bf16.safetensors",
+        "minimax_h3_ref2v_turbo_4step_v0.1_comfyui_bf16.safetensors",
         1
       ],
       "widgets_values_named": {
-        "lora_name": "minimax_h3_ref2v_turbo_8step_v1.0_768p_comfyui_bf16.safetensors",
+        "lora_name": "minimax_h3_ref2v_turbo_4step_v0.1_comfyui_bf16.safetensors",
         "strength_model": 1
       }
     },
@@ -1405,10 +1405,10 @@
       "title": "LIGHTX2V TURBO — SETUP",
       "properties": {},
       "widgets_values": [
-        "# LightX2V Ref2VA Turbo 8-Step v1.0\nDownload the ComfyUI BF16 LoRA and place it in `ComfyUI/models/loras/`. Restart/refresh model list.\n\n**Turbo mode:** strength 1.0; Seed A/B 8 steps; Sigma Shift video 6 / audio 3.\n**Normal mode:** bypass Turbo node (Ctrl+B), change both KSamplers back to 20 steps and Sigma Shift video 12 / audio 3.\nAudio reference remains optional; Seed B remains disabled until enabled.\n\nNOTE: Test output audio/visual quality; LoRA compatibility with additional style/concept LoRAs is not guaranteed."
+        "# LightX2V Ref2VA Turbo 4-Step v0.1\nDownload the ComfyUI BF16 LoRA and place it in `ComfyUI/models/loras/`. Restart/refresh model list.\n\n**Turbo mode:** strength 1.0; Seed A/B 4 steps; Sigma Shift video 12 / audio 3.\n**Normal mode:** bypass Turbo node (Ctrl+B), change both KSamplers back to 20 steps and Sigma Shift video 12 / audio 3.\nAudio reference remains optional; Seed B remains disabled until enabled.\n\nNOTE: Test output audio/visual quality; LoRA compatibility with additional style/concept LoRAs is not guaranteed."
       ],
       "widgets_values_named": {
-        "text": "# LightX2V Ref2VA Turbo 8-Step v1.0\nDownload the ComfyUI BF16 LoRA and place it in `ComfyUI/models/loras/`. Restart/refresh model list.\n\n**Turbo mode:** strength 1.0; Seed A/B 8 steps; Sigma Shift video 6 / audio 3.\n**Normal mode:** bypass Turbo node (Ctrl+B), change both KSamplers back to 20 steps and Sigma Shift video 12 / audio 3.\nAudio reference remains optional; Seed B remains disabled until enabled.\n\nNOTE: Test output audio/visual quality; LoRA compatibility with additional style/concept LoRAs is not guaranteed."
+        "text": "# LightX2V Ref2VA Turbo 4-Step v0.1\nDownload the ComfyUI BF16 LoRA and place it in `ComfyUI/models/loras/`. Restart/refresh model list.\n\n**Turbo mode:** strength 1.0; Seed A/B 4 steps; Sigma Shift video 12 / audio 3.\n**Normal mode:** bypass Turbo node (Ctrl+B), change both KSamplers back to 20 steps and Sigma Shift video 12 / audio 3.\nAudio reference remains optional; Seed B remains disabled until enabled.\n\nNOTE: Test output audio/visual quality; LoRA compatibility with additional style/concept LoRAs is not guaranteed."
       },
       "color": "#432",
       "bgcolor": "#653"
