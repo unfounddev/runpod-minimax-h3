@@ -1,4 +1,4 @@
-"""Run ComfyUI and an authenticated workspace file manager together."""
+"""Run ComfyUI and an authenticated container file manager together."""
 import os
 from pathlib import Path
 import re
@@ -13,7 +13,7 @@ DEFAULT_BROWSER_USERNAME = "admin"
 DEFAULT_BROWSER_PASSWORD = "adminadmin12"
 
 
-def browser_command(database, port=8080, address="0.0.0.0", root="/workspace", binary="/usr/local/bin/filebrowser"):
+def browser_command(database, port=8080, address="0.0.0.0", root="/", binary="/usr/local/bin/filebrowser"):
     return [str(binary), "--database", str(database), "--root", str(root),
             "--address", address, "--port", str(port), "--disableExec"]
 
@@ -48,8 +48,8 @@ def initialize_browser(database, root, username, password, binary="/usr/local/bi
 
 
 def main():
-    root = Path("/workspace")
-    root.mkdir(parents=True, exist_ok=True)
+    Path("/workspace").mkdir(parents=True, exist_ok=True)
+    root = Path("/")
     password = os.environ.get("FILE_BROWSER_PASSWORD", DEFAULT_BROWSER_PASSWORD)
     username = os.environ.get("FILE_BROWSER_USERNAME", DEFAULT_BROWSER_USERNAME)
     children = []
@@ -64,14 +64,14 @@ def main():
 
     signal.signal(signal.SIGTERM, stop)
     signal.signal(signal.SIGINT, stop)
-    # Keep the database outside /workspace, so it cannot be downloaded in the UI.
+    # Preserve the database and existing accounts across service restarts.
     database = Path("/var/lib/framekit-filebrowser/filebrowser.db")
     env = dict(os.environ)
     env.pop("FILE_BROWSER_PASSWORD", None)
     try:
         if os.environ.get("ENABLE_FILE_BROWSER", "1") == "1":
             initialize_browser(database, root, username, password)
-            children.append(subprocess.Popen(browser_command(database), env=env,
+            children.append(subprocess.Popen(browser_command(database, root=root), env=env,
                                              start_new_session=True))
             print(f"File Browser starting on HTTP port 8080; user: {username}", flush=True)
         else:
