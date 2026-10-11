@@ -1,13 +1,13 @@
 # FRAMEKIT H3 Controls
 
-Controls for the MiniMax H3 workflow: standard 0.1–1.0 MP sizes, portrait/landscape,
+Controls for the MiniMax H3 workflow: pixel sizes divisible by 32, portrait/landscape,
 seconds/frame counts, prompt, MP4 playback/audio finishing, labels, notes and run timer.
 The workflow uses native ComfyUI LoadImage, with a single native preview.
 
-Every FRAMEKIT node has an appearance gear and a right-click appearance menu.
-Choose button/accent, title and body colors. Label font size can also be changed.
-Appearance is saved in the workflow. Size labels show nominal MP; dimensions are
-snapped to 32 pixels for H3, so actual area is approximately the displayed MP.
+Change all FRAMEKIT node colors in ComfyUI Settings > FRAMEKIT > Appearance.
+Header, body, accent colors and label font size are saved in user settings.
+Size labels show pixels, including 1344 × 768 for Turbo 768p (or 768 × 1344
+in portrait). Custom sizes must be divisible by 32. Legacy size states are migrated.
 
 Picker and chip styling is adapted from Pixaroma under the MIT license, included
 in THIRD_PARTY_LICENSE.txt. No Pixaroma backend or package installation is required.
