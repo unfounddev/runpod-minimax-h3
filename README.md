@@ -53,7 +53,8 @@ Sizes, Duration, Prompt, Save MP4, Run Timer, Label and Note. Native ComfyUI Loa
 It retains model/LoRA/sampler settings, reference connections, bypass modes,
 seeds, node positions, duration selection and the actual saved prompt.
 
-Sizes has standard 0.1–1.0 MP presets (approximate area after 32-pixel snapping) and Portrait/Landscape buttons; Duration
+Sizes has pixel presets divisible by 32, including 1344 × 768 for Turbo 768p,
+and Portrait/Landscape buttons. Custom sizes also require multiples of 32; Duration
 has the original second buttons and H3 frame-count readout. Prompt/image/video
 previews stay on their respective nodes. Native ComfyUI still owns the canvas,
 Queue/Run and model nodes. This is not a copy of every Pixaroma feature.
