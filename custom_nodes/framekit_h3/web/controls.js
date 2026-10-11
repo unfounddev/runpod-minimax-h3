@@ -222,7 +222,7 @@ function initialize(node, kind) {
   root.style.setProperty("--accent",node.properties?.framekitAccent||ACCENT);
   shell.append(root);
   const dom = node.addDOMWidget("framekit_ui","framekit_controls",shell,{serialize:false,
-    getMinHeight:()=>kind==="FRAMEKITSizes"?410:kind==="FRAMEKITSaveMP4"?220:kind==="FRAMEKITPrompt"?170:90});
+    getMinHeight:()=>kind==="FRAMEKITSizes"?410:kind==="FRAMEKITSaveMP4"?60:kind==="FRAMEKITPrompt"?170:90});
   dom.serialize = false;
   if (kind==="FRAMEKITDuration"||kind==="FRAMEKITSizes") {
     const widget=node.widgets.find(w=>w.name==="state");hiddenWidget(widget);
@@ -257,12 +257,11 @@ function initialize(node, kind) {
     const previous=widget.callback;widget.callback=function(...args){previous?.apply(this,args);render();};
     hook(node,"onConfigure",()=>queueMicrotask(render));render();
   } else if(kind==="FRAMEKITSaveMP4") {
-    const video=element("video");video.controls=true;video.preload="metadata";
     const readout=element("div","Preview appears after generation","framekit-readout");
-    root.append(video,readout);
+    // ComfyUI renders the ui.images animated output and registers it as an asset.
+    // A second DOM video here would duplicate that native preview.
+    root.append(readout);
     hook(node,"onExecuted",message=>{
-      const clip=message?.images?.[0] || message?.videos?.[0];
-      if(clip){const {filename,subfolder,type}=clip;video.src=viewURL({filename,subfolder,type});video.load();}
       readout.textContent=message?.text?.join("\n")||"Saved";
     });
   } else if(kind==="FRAMEKITRunTimer") {
