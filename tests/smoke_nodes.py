@@ -32,14 +32,14 @@ for cls in pack.NODE_CLASS_MAPPINGS.values():
     cls.INPUT_TYPES()
 assert duration('{"seconds":5}') == (124,124/24)
 assert duration('{"seconds":15}')[0] == 362
-assert size(json.dumps(SIZE_DEFAULT)) == (1184,672)
-assert size(json.dumps({**SIZE_DEFAULT,"orientation":"portrait"})) == (672,1184)
-assert SIZE_DEFAULT['mp']==[i/10 for i in range(1,11)]
-for index in range(10):
+assert size(json.dumps(SIZE_DEFAULT)) == (1344,768)
+assert size(json.dumps({**SIZE_DEFAULT,"orientation":"portrait"})) == (768,1344)
+assert 'mp' not in SIZE_DEFAULT
+for index in range(len(SIZE_DEFAULT['sizes'])):
     w,h=size({**SIZE_DEFAULT,'selected':index})
     assert w%32==h%32==0
-    assert abs(w*h/1e6-SIZE_DEFAULT['mp'][index])<0.025
     assert size({**SIZE_DEFAULT,'selected':index,'orientation':'portrait'})==(h,w)
+assert size({'sizes': [[965, 547]], 'selected': 0, 'snap': 8}) == (960, 544)
 for seconds in (-1,0,16,float("nan")):
     try:
         duration(json.dumps({"seconds":seconds}))
@@ -100,7 +100,7 @@ with tempfile.TemporaryDirectory(prefix="nexus-test-") as temporary:
     assert other["ui"]["images"][0]["filename"] != filename
     assert other["ui"]["images"][0]["type"] == "temp"
 
-print("FRAMEKIT smoke passed: 7 nodes + 8 legacy aliases, standard MP sizes, H3, audio, MP4 and metadata")
+print("FRAMEKIT smoke passed: 7 nodes + 8 legacy aliases, 32-pixel sizes, H3, audio, MP4 and metadata")
 
 if opts.workflow:
     workflow=json.loads(Path(opts.workflow).read_text(encoding="utf-8"))
